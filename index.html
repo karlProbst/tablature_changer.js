@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    
+</head>
+
+<body>
+    <h1>Conversor de Tablatura.js</h1>
+    <h2>insira um numero de -10 a 10 </h2>
+
+    <input type="text" id="numberbox">
+    <br>
+    <textarea type="textarea" id="inputbox" cols=100 rows=25></textarea>
+    <br>
+    <textarea type="textarea" id="outputbox" cols=100 rows=25></textarea>
+    <br>
+    <p id="output"></p>
+
+
+    <script>
+        //tablature changer javascript - karl probst - 2021
+        let string = "a123";
+        let listnumpos = [];
+        let lowestnum = 0;
+        var semitone_num = 0;
+        console.log("BEEP");
+
+        function letterCheck(string) {
+            //return list of integers in a array[][] with position 
+            let listnumpos = [];
+            for (i = 0; i < string.length; i++) {
+                if (isNumber(string[i]) == true) {
+                    listnumpos.push([string[i], i]);
+                }
+            }
+            return listnumpos;
+        }
+
+        function isNumber(number) {
+            //returns true if number         
+            return !isNaN(parseInt(number));
+        }
+
+        function sortAlgo(number) {
+            //number sorting fucntion
+            //todo make a loop 
+
+            //lista de numeros
+            const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+            //lista vazia para ser preenchida com a quantidade de aparições de um dado int
+            let listnum = [];
+            let finallist = [];
+            const numlen = number.length;
+            const numslen = numbers.length;
+            for (l = 0; l < numslen; l++) {
+                listnum[l] = 0;
+            }
+            //get n times integer appear
+            for (i = 0; i < numlen; i++) {
+                for (j = 0; j < numslen; j++) {
+
+                    if (number[i][0] == numbers[j]) {
+
+                        listnum[j] = listnum[j] + 1;
+                    }
+                }
+            }
+            //add to a list each number in order       
+            for (i = 0; i < listnum.length; i++) {
+                for (j = 0; j < listnum[i]; j++) {
+                    finallist.push(numbers[i]);
+                }
+            }
+            return finallist;
+        }
+
+        
+        
+         
+
+        function setCharAt(str,index,chr) {
+            if(index > str.length-1) return str;
+            return str.substring(0,index) + chr + str.substring(index+1);
+        }
+       
+        function doIt(string) {
+            listnumpos = letterCheck(string);
+            let a1 = sortAlgo(listnumpos);
+            myDisplayer(a1);
+            let temp_n = 0;
+            let final_string;
+            //obs: listnumpos[num][pos]
+            
+            try{
+                if(listnumpos.length<-1){
+                    for(i=0;i<listnumpos.length;i++){
+                        temp_n = listnumpos[i][0];
+                        temp_n = parseInt(temp_n)+1;
+                        temp_n = temp_n.toString();
+                        console.log(i + " ,l = "+listnumpos[i]);
+                        final_string = setCharAt(string,listnumpos[i][1],temp_n);
+                        console.log(setCharAt("aaaaaaa",2,temp_n));
+                    };
+                };
+            }catch (error){};
+            outputid.value = allSteps(string,semitone_num);
+            
+        }
+        function changeNum(num){
+            if(isNumber(num)){
+                semitone_num = parseInt(num);
+            }else{
+                semitone_num = 0;
+            }
+        }
+        function allSteps(string,num){
+            let  new_array = [];
+            let final_string = "";
+            let num_check;
+            //convert string to array
+            for (i = 0; i < string.length; i++) {
+                new_array.push(string[i]);
+            }
+            
+            for (i = 0; i <  new_array.length; i++) {
+                //check if number
+                if (isNumber( new_array[i])) {
+                    //check if the number is >9 and concatenate the (1,0)
+                    if (isNumber( new_array[i+1])) {
+                        
+                        
+                        //add second to first
+                        new_array[i] = new_array[i] + new_array[i+1]
+                        //remove second
+                        new_array.splice(i+1,1);
+                    };
+                    //act normally if number is <10
+
+                    //transform string to number
+                    new_array[i] = parseInt(new_array[i]);
+                    
+                    
+                    num_check = 0;
+                    if(new_array[i]<10){
+                        num_check = 9; 
+                    };
+                    if(new_array[i]>=10){
+                        num_check=11;
+                    }
+                    //change number
+                    new_array[i] += num;
+                    //not go below 1
+                    if(new_array[i]<1)
+                        new_array[i]=1;
+                    //9 to 10
+                    if(new_array[i]>=10 && num_check==9){
+                        //remove a "-" to not mess with the formating
+                        new_array.splice(i+1,1);
+                    }
+                    //10 to 9
+                    if(new_array[i]<10 && num_check==11){
+                        //added a "-"
+                        new_array.splice(i+1,0,"-");
+                    }
+                    //convert number to string
+                    new_array[i] = new_array[i].toString();
+                }
+            }; 
+             //convert array to string
+            for (i = 0; i < new_array.length; i++) {
+                final_string += new_array[i];
+            }
+            //return
+            return final_string;
+        };
+        function myDisplayer(some) {
+            document.getElementById("output").innerHTML = some;
+        };
+
+        //html elements
+        const inputid = document.getElementById("inputbox");
+        const outputid = document.getElementById("outputbox");
+        const numberid = document.getElementById("numberbox");
+
+        inputid.addEventListener("keyup", () => { doIt(inputid.value); });
+        numberid.addEventListener("keyup", () => { changeNum(numberid.value,); });
+        numberid.addEventListener("keyup", () => { doIt(inputid.value); });
+    </script>
+</body>
+
+</html>
